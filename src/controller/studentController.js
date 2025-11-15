@@ -1,7 +1,7 @@
 import * as repo from "../repository/studentRepository.js";
 
-export const addStudent = (req, res) => {
-    const success = repo.addStudent(req.body);
+export const addStudent =async (req, res) => {
+    const success = await repo.addStudent(req.body);
     if (success) {
         res.status(204).send();
     } else {
@@ -9,8 +9,8 @@ export const addStudent = (req, res) => {
     }
 }
 
-export const findStudent = (req, res) => {
-    const student = repo.findStudent(+req.params.id);
+export const findStudent = async (req, res) => {
+    const student = await repo.findStudent(+req.params.id);
     if (student) {
         const {password, ...studentWithoutPassword} = student;
         res.json(studentWithoutPassword);
@@ -19,55 +19,50 @@ export const findStudent = (req, res) => {
     }
 }
 
-export const updateStudent = (req, res) => {
-    const update = repo.updateStudent(req.body)
-    if(update){
-        res.status(204).send(update)
-    }else {
-        res.status(404).send()
+export const updateStudent = async (req, res) => {
+    const student = await repo.updateStudent(+req.params.id, req.body);
+    if (student.value) {
+        const {scores, ...studentWithoutScores} = student.value;
+        res.json(studentWithoutScores);
+    } else {
+        res.status(404).send();
     }
 }
 
-export const deleteStudent = (req, res) => {
-    const deleted = repo.deleteStudent(+req.params.id);
-    if (deleted) {
+export const deleteStudent = async (req, res) => {
+    const result = await repo.deleteStudent(+req.params.id);
+    if (result.value) {
+        const { password, ...studentWithoutPassword } = result.value;
+        res.json(studentWithoutPassword);
+    } else {
+        res.status(404).send();
+    }
+};
+
+export const addScore = async (req, res) => {
+    const result = await repo.addScore(+req.params.id, req.body.examName, +req.body.score);
+    if (result.value) {
         res.status(204).send();
     } else {
         res.status(404).send();
     }
 };
 
-export const addScore = (req, res) => {
-    const score = repo.addScore(req.body)
-    if(score){
-        res.status(204).send(score)
-    }else {
-        res.status(404).send()
-    }
-}
-export const findByName = (req, res) => {
-    const name = repo.findByName(req.params.name);
-    if(name.length > 0){
-        res.json(name)
-    }else {
-        res.status(404).send()
-    }
-}
-export const countByNames = (req, res) => {
-    const count = repo.countByNames()
-    res.json(count);
+export const findByName =async (req, res) => {
+    const students = await repo.findByName(req.params.name);
+    const studentsWithoutPasswords = students.map(student => ({...student, password: undefined}))
+    res.json(studentsWithoutPasswords);
 }
 
-export const findByMinScore = (req, res) => {
-    const minScore = Number(req.params.score);
-    if(isNaN(minScore)){
-        res.status(400).send()}
+export const countByNames = async (req, res) => {
+    const names = req.query.names;
+    const list = Array.isArray(names) ? names : [names];
+    const count = await repo.countByNames(list);
+    res.json(count)
+}
 
-    const allStudents = repo.findByMinScore(minScore);
-    if(allStudents.length > 0){
-        res.json(allStudents);
-    }else {
-        res.status(404).send()
-    }
-
+export const findByMinScore = async (req, res) => {
+    const students = await repo.findByMinScore(req.params.exam, +req.params.minScore);
+    const studentsWithoutPasswords = students.map(student => ({...student, password: undefined}))
+    res.json(studentsWithoutPasswords);
 }
