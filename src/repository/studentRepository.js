@@ -7,7 +7,7 @@ export const addStudent = async ({id, name, password}) => {
     if (existingStudent) {
         return false;
     }
-    await collection.insertOne({_id: id, name, password, scores: {}});
+    await collection.insertOne({_id: +id, name, password, scores: {}});
     return true;
 }
 
@@ -41,11 +41,11 @@ export const findByName = async (name) => {
 export const countByNames =async () => {
     return await collection.aggregate([{
         $group: {_id: "$name", count: {$sum: 1}}
-    }])
+    }]).toArray();
 }
 
 export const findByMinScore = async (exam, minScore) => {
 return await collection.find({[
-    `scores.${exam}`]: {$sum: minScore}
-})
+    `scores.${exam}`]: {$gte: minScore}
+}).toArray();
 }
