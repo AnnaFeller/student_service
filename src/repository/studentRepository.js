@@ -1,5 +1,7 @@
 import Student from "../model/student.js";
 
+//Репозиторий это прямой доступ к MongoDB
+
 export function createStudent(student) {
 return Student.create(student)
 }
@@ -13,7 +15,7 @@ export function deleteStudentById(id) {
 }
 
 export function updateStudent(id,data) {
-    return Student.findByIdAndUpdate(id,data)
+    return Student.findByIdAndUpdate(id,data,{new:true});
 }
 
 export function updateStudentScore(id,exam,score) {

@@ -10,6 +10,6 @@ export const updateStudentSchema = Joi.object({
     password: Joi.string()
 })
 export const scoreSchema = Joi.object({
-    exemName: Joi.string().required(),
+    examName: Joi.string().required(),
     score: Joi.number().min(0).max(100).required(),
 })
