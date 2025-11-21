@@ -50,11 +50,6 @@ export const addScore = async (req, res) => {
     }
     const success = await service.addScore(+req.params.id, req.body.examName, +req.body.score);
     res.sendStatus(success ? 204 : 404);
-    if (success) {
-        res.status(204).send();
-    } else {
-        res.status(404).send();
-    }
 }
 
 export const findByName = async (req, res) => {

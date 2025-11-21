@@ -3,34 +3,34 @@ import Student from "../model/student.js";
 //Репозиторий это прямой доступ к MongoDB
 
 export function createStudent(student) {
-return Student.create(student)
+    return Student.create(student);
 }
 
 export function findStudentById(id) {
-    return Student.findById(id).exec()
+    return Student.findById(id);
 }
 
 export function deleteStudentById(id) {
-    return Student.findByIdAndDelete(id).exec()
+    return Student.findByIdAndDelete(id);
 }
 
-export function updateStudent(id,data) {
-    return Student.findByIdAndUpdate(id,data,{new:true});
+export function updateStudent(id, data) {
+    return Student.findByIdAndUpdate(id, data, {new: true});
 }
 
-export function updateStudentScore(id,exam,score) {
-    return Student.findByIdAndUpdate(id,  {[`scores.${exam}`]: score})
+export function updateStudentScores(id, exam, score) {
+    return Student.findByIdAndUpdate(id, {[`scores.${exam}`]: score}, {new: true});
 }
+
 export function findStudentByName(name) {
-    return Student.find({name:new RegExp(`^${name}$`,`i`)})
+    return Student.find({name: new RegExp(`^${name}$`, `i`)})
 }
 
-export function countStudentByName(names) {
-    const regexConditions = names.map(name =>({name : new RegExp(`^${name}$`, `i`)}))
-    return Student.countDocuments({$or:regexConditions})
+export function countStudentsByName(names) {
+    const regexConditions = names.map(name => ({name: new RegExp(`^${name}$`, `i`)}));
+    return Student.countDocuments({$or: regexConditions});
 }
 
-export function findStudentsByMinScore(exam,minScore) {
-    return Student.find({[`scores.${exam}`]: {$gte:minScore}})
+export function findStudentsByMinScore(exam, minScore) {
+    return Student.find({[`scores.${exam}`]: {$gte: minScore}});
 }
-
